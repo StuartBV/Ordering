@@ -1,0 +1,5 @@
+IF NOT EXISTS (SELECT * FROM master.dbo.syslogins WHERE loginname = N'POWERPLAY\b001.davis')
+CREATE LOGIN [POWERPLAY\b001.davis] FROM WINDOWS
+GO
+CREATE USER [powerplay\b001.davis] FOR LOGIN [POWERPLAY\b001.davis] WITH DEFAULT_SCHEMA=[stuart]
+GO
