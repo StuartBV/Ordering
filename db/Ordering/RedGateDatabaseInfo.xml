@@ -57,6 +57,13 @@
     <DataWriteAllFilesInOneDirectory>True</DataWriteAllFilesInOneDirectory>
   </WriteToFileOptions>
   <DataFileSet>
-    <Count>0</Count>
+    <Count>7</Count>
+    <DataFile>dbo.Client_BusinessAddress_Data.sql</DataFile>
+    <DataFile>dbo.Config_OrderSenders_Data.sql</DataFile>
+    <DataFile>dbo.Ordering_ProductFulfilmentTypes_Data.sql</DataFile>
+    <DataFile>dbo.Ordering_SourceTypes_Data.sql</DataFile>
+    <DataFile>dbo.OrderSenders_Config_Data.sql</DataFile>
+    <DataFile>dbo.Sender_Email_AdditionalRecipients_Data.sql</DataFile>
+    <DataFile>dbo.sysLookup_Data.sql</DataFile>
   </DataFileSet>
 </DatabaseInformation>
