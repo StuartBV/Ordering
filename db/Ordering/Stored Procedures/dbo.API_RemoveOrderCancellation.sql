@@ -2,7 +2,7 @@ SET QUOTED_IDENTIFIER ON
 GO
 SET ANSI_NULLS ON
 GO
-CREATE PROCEDURE [dbo].[API_RemoveOrderCancellation]
+CREATE procedure [dbo].[API_RemoveOrderCancellation]
 @SourceKey int, 
 @SourceType int,
 @Userid UserID,
@@ -11,12 +11,17 @@ CREATE PROCEDURE [dbo].[API_RemoveOrderCancellation]
 as
 set nocount on
 
-DECLARE @ItemId int
+declare @ItemId int
 
-select top (1) @ItemId=ItemId from Ordering_DeliveryItems where SourceType=@SourceType AND SourceKey=@SourceKey ORDER BY DeliveryId DESC
+select @ItemId=Max(ItemId)
+from Ordering_DeliveryItems
+where SourceType=@SourceType and SourceKey=@SourceKey
 
-DELETE FROM dbo.Ordering_Cancellations WHERE DeliveryItemId = @ItemId
+--select top 1 @ItemId=ItemId from Ordering_DeliveryItems where SourceType=@SourceType and SourceKey=@SourceKey order by DeliveryId desc
 
-insert into dbo.Ordering_CancellationLogs (DeliveryItemId, Status, HandlerName, Notes, CreatedBy)
+delete from Ordering_Cancellations
+where DeliveryItemId=@ItemId
+
+insert into Ordering_CancellationLogs (DeliveryItemId, [Status], HandlerName, Notes, CreatedBy)
 select @ItemId, 9, @HandlerName, @Notes, @Userid
 GO

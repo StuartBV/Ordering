@@ -39,13 +39,11 @@ end
 GO
 ALTER TABLE [dbo].[Queue_Queue] ADD CONSTRAINT [PK_QUEUE_Queue] PRIMARY KEY CLUSTERED  ([Id]) ON [PRIMARY]
 GO
-CREATE NONCLUSTERED INDEX [Idx_DateSent] ON [dbo].[Queue_Queue] ([DateSent]) INCLUDE ([DeliveryId], [LastRetryAttempt]) ON [PRIMARY]
+CREATE NONCLUSTERED INDEX [Idx_DateSent] ON [dbo].[Queue_Queue] ([DateSent], [OOS]) INCLUDE ([DeliveryId], [LastRetryAttempt]) WITH (FILLFACTOR=99) ON [PRIMARY]
 GO
 CREATE NONCLUSTERED INDEX [Idx_DeliveryId] ON [dbo].[Queue_Queue] ([DeliveryId], [DateSent]) WITH (FILLFACTOR=99) ON [PRIMARY]
 GO
 CREATE NONCLUSTERED INDEX [Idx_LastRetryAttempt] ON [dbo].[Queue_Queue] ([LastRetryAttempt]) INCLUDE ([DateSent], [DeliveryId]) ON [PRIMARY]
-GO
-CREATE NONCLUSTERED INDEX [Queue_OOS] ON [dbo].[Queue_Queue] ([OOS], [DeliveryId]) ON [PRIMARY]
 GO
 EXEC sp_addextendedproperty N'MS_Description', N'Flag to indicate if item(s) for this order are out of stock. Flag is set by the PP sender check stock process and cleared by ppd3 product inventory trigger', 'SCHEMA', N'dbo', 'TABLE', N'Queue_Queue', 'COLUMN', N'OOS'
 GO

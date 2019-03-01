@@ -1,2 +1,4 @@
-EXEC sp_addrolemember N'db_datareader', N'POWERPLAY\it.wallboard'
+
+EXEC sp_addrolemember N'db_datareader', N'sa'
+
 GO

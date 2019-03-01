@@ -7,7 +7,7 @@ GO
 -- Create date: 26/11/2014
 -- Description:	
 -- =============================================
-CREATE proc [dbo].[Api_GetKeyInfo] 
+CREATE proc [dbo].[XXXApi_GetKeyInfo] 
 	@KeyId varchar(20)
 AS
 begin

@@ -34,7 +34,7 @@ as
 				case when oa.Town = '' then oa.Address2 else oa.Town end as Town,
                 oa.County,
                 oa.Postcode,
-                isnull(sso.FirstName + ' ' + sso.LastName, od.CreatedBy) + ' <' + coalesce(ou.GroupEmail, sso.Email, '') + '>' as AgentName,
+                isnull(sso.FirstName + ' ' + sso.LastName, od.CreatedBy) + ' <' + coalesce(ou.GroupEmail, sso.Email, 'itsupport@bevalued.co.uk') + '>' as AgentName,
                 od.Reference as CustomerReference,
                 ic.Name as InsurerName,
                 od.DeliveryNotes,
@@ -47,10 +47,11 @@ as
                 join Ordering_Customer oc on oc.Id = od.CustomerId
                 join Ordering_Address oa on oa.DeliveryId = q.DeliveryId
                 join dbo.InsuranceCos ic on ic.ID = od.InscoId
-                join PPD3.dbo.SSO_User sso on sso.Username = od.CreatedBy
-                join PPD3.dbo.SSO_OrganisationalUnit ou on ou.Id = sso.OrganisationalUnitId
+                left join PPD3.dbo.SSO_User sso on sso.Username = od.CreatedBy
+                left join PPD3.dbo.SSO_OrganisationalUnit ou on ou.Id = sso.OrganisationalUnitId
                 left join dbo.Ordering_Claims cl on cl.DeliveryId = od.DeliveryID
         where   q.[Id] = @QueueId
     end
 	
+
 GO

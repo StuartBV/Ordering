@@ -50,7 +50,7 @@ if exists (select * from Ordering_Delivery where Guid=@Guid)
 	raiserror('Duplicate order exists SP_Ordering_InsertOrder',18,1)
 
 begin TRAN
-
+	
 	SET @DeliveryDate = (SELECT CASE WHEN @SupplierId = 6683 AND @DeliveryDate IS NULL THEN DATEADD(dd, DATEDIFF(dd, 0, getdate()), 0) ELSE @DeliveryDate END) 
 
 	insert into Ordering_Delivery (SourceKey, SourceType, SupplierId, Reference, CountryId, DeliveryDate,
@@ -64,6 +64,10 @@ begin TRAN
 
 	insert into Ordering_Claims (DeliveryId, InsurancePolicyNo, InsuranceClaimNo, Excess, IncidentDate, CreatedBy)
 	values  (@DeliveryId, @InsurancePolicyNo, @InsuranceClaimNo, @Excess, @IncidentDate, @UserId)
+
+	--Added If to cover of Companion claims sent across with no postcode which is needed for DSG vouchers - BH 26/02/19
+	--https://atom.bevalued.co.uk/Fusion/Incident/Details/79977
+	if @SupplierId in (6196,6207) and @Postcode is null set @Postcode = 'BN22 8LD'
 
 	insert into Ordering_Address (DeliveryId, Address1, Address2, Town, County, Country, Postcode, ContactTel, CreatedBy)
 	values  (@DeliveryId, @Address1, @Address2, @Town, @County, @Country, @PostCode, @ContactTel, @userid)
@@ -90,6 +94,7 @@ begin TRAN
 	select @DeliveryId as DeliveryId
 
 commit
+
 
 
 

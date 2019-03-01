@@ -27,13 +27,13 @@ if @Success=1
 begin
 
 	--// Update Order
-	update od set od.[status]= case when od.SupplierId in (6207,6196,6502,6573,6657,6665) then 20 else 5 end
+	update od set od.[status]= case when od.SupplierId in (6207,6196,6502,6573,6657,6665) or od.ProductFulfilmentType=7 then 20 else 5 end
 	from QUEUE_Queue q
 	join ORDERING_Delivery od on od.id=q.DeliveryId and od.[status]=0
 	where q.[ID]=@queueid 
 
 	--// Update Order Items
-	update odi set odi.[status]=case when od.SupplierId in (6207,6196,6502,6573,6657,6665) then 20 else 5 end
+	update odi set odi.[status]=case when od.SupplierId in (6207,6196,6502,6573,6657,6665) or od.ProductFulfilmentType=7 then 20 else 5 end
 	from QUEUE_Queue q
 	join ORDERING_DeliveryItems odi on odi.deliveryid=q.DeliveryId and odi.[status]=0
 	join ORDERING_Delivery od on od.id=odi.deliveryid

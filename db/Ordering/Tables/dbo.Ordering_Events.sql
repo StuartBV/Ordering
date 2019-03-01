@@ -15,3 +15,5 @@ CREATE TABLE [dbo].[Ordering_Events]
 GO
 ALTER TABLE [dbo].[Ordering_Events] ADD CONSTRAINT [PK_Ordering_Events] PRIMARY KEY CLUSTERED  ([DeliveryId], [Id]) ON [PRIMARY]
 GO
+CREATE NONCLUSTERED INDEX [Idx_Type] ON [dbo].[Ordering_Events] ([Type], [DeliveryId]) WITH (FILLFACTOR=99) ON [PRIMARY]
+GO

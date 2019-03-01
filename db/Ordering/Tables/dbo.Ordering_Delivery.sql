@@ -38,6 +38,8 @@ CREATE TABLE [dbo].[Ordering_Delivery]
 GO
 ALTER TABLE [dbo].[Ordering_Delivery] ADD CONSTRAINT [PK_ORDERING_Delivery] PRIMARY KEY CLUSTERED  ([Id]) WITH (FILLFACTOR=95) ON [PRIMARY]
 GO
+CREATE NONCLUSTERED INDEX [Idx_Channel] ON [dbo].[Ordering_Delivery] ([Channel], [SourceType], [ProductFulfilmentType]) INCLUDE ([InscoId], [SupplierId]) WITH (FILLFACTOR=99) ON [PRIMARY]
+GO
 CREATE NONCLUSTERED INDEX [Idx_CreateDate] ON [dbo].[Ordering_Delivery] ([CreateDate], [Status]) WITH (FILLFACTOR=99) ON [PRIMARY]
 GO
 CREATE NONCLUSTERED INDEX [Idx_Reference] ON [dbo].[Ordering_Delivery] ([Reference]) INCLUDE ([Seq], [SourceKey]) WITH (FILLFACTOR=99) ON [PRIMARY]

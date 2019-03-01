@@ -14,13 +14,23 @@ CREATE procedure [dbo].[API_CancelOrder]
 as
 set nocount on
 
-DECLARE @ItemId int
+declare @ItemId int
 
-select top (1) @ItemId=ItemId from Ordering_DeliveryItems where SourceType=@SourceType AND SourceKey=@SourceKey ORDER BY DeliveryId DESC
+select @ItemId=Max(ItemId)
+from Ordering_DeliveryItems
+where SourceType=@SourceType and SourceKey=@SourceKey
 
-insert into Ordering_Cancellations (Reason, Condition, OtherInfo, Status, DeliveryItemId, CreatedBy, HandlerName, Email)
+/* -- SD says what's wrong with using Max()?
+select top (1) @ItemId=ItemId
+from Ordering_DeliveryItems
+where SourceType=@SourceType and SourceKey=@SourceKey
+order by DeliveryId desc
+*/
+
+insert into Ordering_Cancellations (Reason, Condition, OtherInfo, [Status], DeliveryItemId, CreatedBy, HandlerName, Email)
 select @Reason, @Condition, @OtherInfo, 1, @ItemId, @Userid, @HandlerName, @Email
 
-insert into dbo.Ordering_CancellationLogs (DeliveryItemId, Status, HandlerName, Reason, Condition, OtherInfo, CreatedBy)
-select @ItemId, 1, @HandlerName, @reason,@Condition, @OtherInfo, @Userid
+-- Why is this table called Logs yet every other one of the 55,215 log tables aren't :-/ A "log" is implied to be plural
+insert into Ordering_CancellationLogs (DeliveryItemId, [Status], HandlerName, Reason, Condition, OtherInfo, CreatedBy)
+select @ItemId, 1, @HandlerName, @Reason,@Condition, @OtherInfo, @Userid
 GO

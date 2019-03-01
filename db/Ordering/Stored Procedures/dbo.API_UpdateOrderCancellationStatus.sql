@@ -16,22 +16,27 @@ CREATE procedure [dbo].[API_UpdateOrderCancellationStatus]
 as
 set nocount on
 
-DECLARE @ItemId int
+declare @ItemId int
 
-select top (1) @ItemId=ItemId from Ordering_DeliveryItems where SourceType=@SourceType AND SourceKey=@SourceKey ORDER BY DeliveryId DESC
+select @ItemId=Max(ItemId)
+from Ordering_DeliveryItems
+where SourceType=@SourceType and SourceKey=@SourceKey
 
-update Ordering_Cancellations
-set 
-	Status = @CancellationStatus, 
-	CollectionFee = @CollectionFee,
-	RestockingFee = @RestockingFee,
-	AlteredBy = @Userid,
-	AlteredDate = GETDATE()
- where DeliveryItemId = @ItemId
+--select top (1) @ItemId=ItemId from Ordering_DeliveryItems where SourceType=@SourceType and SourceKey=@SourceKey order by DeliveryId desc
 
-insert into dbo.Ordering_CancellationLogs (DeliveryItemId, Status, HandlerName,Reason, OtherInfo, Notes, CollectionFee,RestockingFee,CreatedBy)
+update Ordering_Cancellations set 
+	[Status]=@CancellationStatus, 
+	CollectionFee=@CollectionFee,
+	RestockingFee=@RestockingFee,
+	AlteredBy=@Userid,
+	AlteredDate=GetDate()
+ where DeliveryItemId=@ItemId
+
+insert into Ordering_CancellationLogs (DeliveryItemId, [Status], HandlerName,Reason, OtherInfo, Notes, CollectionFee,RestockingFee,CreatedBy)
 select @ItemId, @CancellationStatus, @HandlerName,@Reason,@OtherInfo,  @Notes,@CollectionFee,@RestockingFee, @Userid
 
-select * from Ordering_CancellationLogs
+
+-- Never use select *. Do not pass go, do not collect £200. See me.
+--select * from Ordering_CancellationLogs
 
 GO
