@@ -14,26 +14,26 @@ CREATE TABLE [dbo].[Ordering_Delivery]
 [DeliveryNotes] [varchar] (1000) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
 [DeliveryService] [smallint] NULL,
 [CourierCode] [smallint] NULL,
-[CourierRef] [varchar] (50) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
 [CourierServiceCode] [smallint] NULL,
+[Category] [varchar] (200) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+[CourierRef] [varchar] (50) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
 [SupplierRef] [varchar] (50) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
 [CourierID] [varchar] (10) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
-[ProductFulfilmentType] [tinyint] NULL,
-[Category] [varchar] (200) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
 [SupplierName] [varchar] (100) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
-[MarkedForInvoiceDate] [datetime] NULL,
 [Channel] [varchar] (50) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+[ProductFulfilmentType] [tinyint] NULL,
 [InscoId] [int] NULL,
 [SendEmail] [bit] NOT NULL CONSTRAINT [DF_ORDERING_Delivery_SendEmail] DEFAULT ((0)),
 [SendSms] [bit] NOT NULL CONSTRAINT [DF_ORDERING_Delivery_SendSms] DEFAULT ((0)),
 [DeliveryID] AS ([id]),
+[MarkedForInvoiceDate] [datetime] NULL,
 [Seq] [tinyint] NULL,
+[VatRate] [decimal] (18, 2) NULL CONSTRAINT [DF_Ordering_Delivery_VatRate] DEFAULT ((0)),
 [Guid] [varchar] (36) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
 [CreateDate] [datetime] NOT NULL CONSTRAINT [DF__ORDERING___Creat__77BFCB91] DEFAULT (getdate()),
 [CreatedBy] [dbo].[UserID] NOT NULL,
 [AlteredDate] [datetime] NULL,
-[AlteredBy] [dbo].[UserID] NULL,
-[VatRate] [decimal] (18, 2) NULL CONSTRAINT [DF_Ordering_Delivery_VatRate] DEFAULT ((0))
+[AlteredBy] [dbo].[UserID] NULL
 ) ON [PRIMARY]
 GO
 ALTER TABLE [dbo].[Ordering_Delivery] ADD CONSTRAINT [PK_ORDERING_Delivery] PRIMARY KEY CLUSTERED  ([Id]) WITH (FILLFACTOR=95) ON [PRIMARY]
