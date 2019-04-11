@@ -1,11 +1,11 @@
 CREATE TABLE [dbo].[Ordering_Claims]
 (
-[DeliveryId] [int] NOT NULL,
+[DeliveryId] [int] NOT NULL CONSTRAINT [DF_Ordering_Claims_DeliveryId] DEFAULT ((0)),
 [InsurancePolicyNo] [varchar] (50) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL,
 [InsuranceClaimNo] [varchar] (50) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL,
 [Excess] [smallmoney] NOT NULL,
 [IncidentDate] [smalldatetime] NULL,
-[ExcessCollectedByBV] [bit] NULL,
+[ExcessCollectedByBV] [bit] NOT NULL CONSTRAINT [DF_Ordering_Claims_ExcessCollectedByBV] DEFAULT ((0)),
 [CreateDate] [datetime] NOT NULL CONSTRAINT [DF_Ordering_Claim_CreateDate] DEFAULT (getdate()),
 [CreatedBy] [dbo].[UserID] NOT NULL CONSTRAINT [DF_Ordering_Claims_CreatedBy] DEFAULT ('sys'),
 [AlteredDate] [datetime] NULL,

@@ -3,15 +3,19 @@ GO
 SET ANSI_NULLS ON
 GO
 CREATE procedure [dbo].[Ordering_Invoice_Order_Insert]
-@deliveryid int,
+@deliveryid int, 
 @invoiceid int out
 as
+set nocount on
+insert into Invoicing.dbo.Invoicing_Orders (CustomerId, SourceKey, SourceType, SupplierId, Reference, [Status], CountryId, CreatedBy, 
+	Category, SupplierName, DeliveryId, OrderDate, OrderSentDate, Channel, InscoID, ExcessCollected)
+select CustomerId, SourceKey, SourceType, SupplierId, Reference, [Status], CountryId, d.CreatedBy,
+	Category, SupplierName, d.[Id], d.CreateDate, q.DateSent, d.Channel, d.InscoId, IsNull(c.Excess,0) Excess
+from Ordering_Delivery d join Queue_Queue q on q.DeliveryId=d.[Id]
+left join Ordering_Claims c on c.DeliveryId=d.id and c.ExcessCollectedByBV=1
+where d.[Id]=@deliveryid
+and not exists(select * from Invoicing.dbo.Invoicing_Orders i where i.DeliveryId=d.[Id])
 
-insert into Invoicing.dbo.Invoicing_Orders (CustomerId,SourceKey,SourceType,SupplierId,Reference,[Status],CountryId,CreateDate,CreatedBy,
-	Category,suppliername,DeliveryId,OrderDate,OrderSentDate,channel,InscoID)
-select CustomerId,SourceKey,SourceType,SupplierId,Reference,[Status],CountryId,getdate(),d.CreatedBy, Category,suppliername,d.[id],d.CreateDate,q.DateSent,d.channel,d.InscoID
-FROM Ordering_Delivery d join Queue_Queue q on q.DeliveryId=d.[id]
-where d.[id]=@deliveryid and not exists(select * from Invoicing.dbo.Invoicing_Orders io1 where io1.deliveryid=d.[id])
+select @invoiceid=Scope_Identity()
 
-select @invoiceid=scope_identity()
 GO

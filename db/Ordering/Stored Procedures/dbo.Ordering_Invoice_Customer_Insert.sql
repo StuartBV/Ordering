@@ -2,29 +2,25 @@ SET QUOTED_IDENTIFIER ON
 GO
 SET ANSI_NULLS ON
 GO
-CREATE proc [dbo].[Ordering_Invoice_Customer_Insert]
-@deliveryid int,
+CREATE procedure [dbo].[Ordering_Invoice_Customer_Insert]
+@deliveryid int, 
 @invoiceId int
 as
-
 set nocount on
 declare @customerid int
 
-insert into Invoicing.dbo.INVOICING_Customer(Title,Forename,Surname,EmailAddress,MobilePhone,DaytimePhone,EveningPhone,CreatedBy,InvoiceId,DeliveryId)
-select Title,Forename,Surname,EmailAddress,MobilePhone,DaytimePhone,EveningPhone,c.CreatedBy,@InvoiceId,	d.id
-FROM dbo.ORDERING_Delivery d
-join ordering.dbo.ORDERING_Customer c on c.id=d.customerid
-where d.id=@deliveryid
-and not exists(
-	select * from Invoicing.dbo.INVOICING_Customer ic where ic.deliveryId=d.id)
+insert into Invoicing.dbo.Invoicing_Customer(Title, Forename, Surname, EmailAddress, MobilePhone, DaytimePhone, EveningPhone, CreatedBy, InvoiceId, DeliveryId)
+select Title, Forename, Surname, EmailAddress, MobilePhone, DaytimePhone, EveningPhone, c.CreatedBy, @invoiceId, d.Id
+from Ordering_Delivery d
+join Ordering.dbo.Ordering_Customer c on c.Id=d.CustomerId
+where d.Id=@deliveryid
+and not exists(select * from Invoicing.dbo.Invoicing_Customer ic where ic.DeliveryId=d.Id)
 
-set @customerid=scope_identity()
+set @customerid=Scope_Identity()
 
-update o set o.customerid=@customerid
-from dbo.ORDERING_Delivery od
-join Invoicing.dbo.INVOICING_Orders o on 
-	o.SourceKey=od.SourceKey
-	and o.SourceType=od.SourceType
-where od.id=@deliveryid
+update o set o.CustomerId=@customerid
+from Ordering_Delivery od
+join Invoicing.dbo.Invoicing_Orders o on o.SourceKey=od.SourceKey and o.SourceType=od.SourceType
+where od.Id=@deliveryid
 
 GO
