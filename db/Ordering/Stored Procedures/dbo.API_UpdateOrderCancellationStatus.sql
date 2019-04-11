@@ -4,14 +4,14 @@ SET ANSI_NULLS ON
 GO
 CREATE procedure [dbo].[API_UpdateOrderCancellationStatus]
 @SourceKey int, 
-@SourceType int,
-@Userid UserID,
-@Reason varchar(50),
-@OtherInfo varchar(500),
-@HandlerName varchar(50),
-@CollectionFee decimal (18,2),
-@RestockingFee decimal (18,2),
-@Notes varchar(500),
+@SourceType int, 
+@UserId UserID, 
+@Reason varchar(200), 
+@OtherInfo varchar(500), 
+@HandlerName varchar(50), 
+@CollectionFee decimal (5,2), 
+@RestockingFee decimal (5,2), 
+@Notes varchar(500), 
 @CancellationStatus int
 as
 set nocount on
@@ -26,14 +26,14 @@ where SourceType=@SourceType and SourceKey=@SourceKey
 
 update Ordering_Cancellations set 
 	[Status]=@CancellationStatus, 
-	CollectionFee=@CollectionFee,
-	RestockingFee=@RestockingFee,
-	AlteredBy=@Userid,
+	CollectionFee=@CollectionFee, 
+	RestockingFee=@RestockingFee, 
+	AlteredBy=@UserId, 
 	AlteredDate=GetDate()
- where DeliveryItemId=@ItemId
+where DeliveryItemId=@ItemId
 
-insert into Ordering_CancellationLogs (DeliveryItemId, [Status], HandlerName,Reason, OtherInfo, Notes, CollectionFee,RestockingFee,CreatedBy)
-select @ItemId, @CancellationStatus, @HandlerName,@Reason,@OtherInfo,  @Notes,@CollectionFee,@RestockingFee, @Userid
+insert into Ordering_CancellationLogs (DeliveryItemId, [Status], HandlerName, Reason, OtherInfo, Notes, CollectionFee, RestockingFee, CreatedBy)
+select @ItemId, @CancellationStatus, @HandlerName, @Reason, @OtherInfo, @Notes, @CollectionFee, @RestockingFee, @UserId
 
 
 -- Never use select *. Do not pass go, do not collect £200. See me.
