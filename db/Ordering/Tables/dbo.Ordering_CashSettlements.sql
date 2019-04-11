@@ -2,7 +2,7 @@ CREATE TABLE [dbo].[Ordering_CashSettlements]
 (
 [Deliveryid] [int] NOT NULL,
 [BankId] [int] NOT NULL,
-[Amount] [smallmoney] NOT NULL,
+[Amount] [decimal] (8, 2) NOT NULL,
 [PayeeName] [varchar] (50) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL,
 [BankSortCode] [varchar] (10) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL,
 [BankAccountNo] [varchar] (20) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL,
