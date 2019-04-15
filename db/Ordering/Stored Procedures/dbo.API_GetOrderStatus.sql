@@ -34,7 +34,7 @@ from Ordering_Delivery od
 join PPD3.dbo.Distributor d on d.ID=od.SupplierId
 join Ordering_Customer cu on cu.Id=od.CustomerId
 join Ordering_Address a on a.DeliveryId=od.Id
-join dbo.InsuranceCos ic on od.InscoId=ic.ID
+join InsuranceCos ic on od.InscoId=ic.ID
 left join dbo.Ordering_Claims oc on oc.DeliveryId=od.DeliveryID
 where (@singleItem=0 and od.SourceKey=@sourcekey and od.SourceType=@sourcetype) or 
 	 (
@@ -74,8 +74,8 @@ join PPD3.dbo.Distributor d on d.ID=od.SupplierId
 join Ordering_Customer cu on cu.Id=od.CustomerId
 join Ordering_Address a on a.DeliveryId=od.Id
 left join Ordering_Cancellations oc on odi.ItemId=oc.DeliveryItemId
-left outer join (
-select oic.DeliveryItemId, 
+outer apply (
+select
 	DeliveryPriceNet=Sum(case when oic.[Type]=1 then oic.PriceNet else Convert(money, 0) end),
 	DeliveryPriceGross=Sum(case when oic.[Type]=1 then oic.PriceGross else Convert(money, 0) end),
 	InstallationPriceNet=Sum(case when oic.[Type]=2 then oic.PriceNet else Convert(money, 0) end),
@@ -83,8 +83,9 @@ select oic.DeliveryItemId,
 	DisposalPriceNet=Sum(case when oic.[Type]=3 then oic.PriceNet else Convert(money, 0) end),
 	DisposalPriceGross=Sum(case when oic.[Type]=3 then oic.PriceGross else Convert(money, 0) end)
 	from Ordering_DeliveryItemCharges oic
+	where oic.DeliveryItemId=odi.ItemId
 	group by oic.DeliveryItemId
-) charges on charges.DeliveryItemId=odi.ItemId
+) charges
 	where (@singleItem=0 and od.SourceKey=@sourcekey and od.SourceType=@sourcetype) or
 	 (@singleItem=1 and odi.SourceKey=@sourcekey and odi.SourceType=@sourcetype)
 
